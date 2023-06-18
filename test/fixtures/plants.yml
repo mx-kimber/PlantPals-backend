@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  common_name: MyString
+  latin_name: MyString
+  img: MyString
+  watering: MyString
+  light_ideal: MyString
+  light_tolerated: MyString
+  climate: MyString
+  category: MyString
+
+two:
+  common_name: MyString
+  latin_name: MyString
+  img: MyString
+  watering: MyString
+  light_ideal: MyString
+  light_tolerated: MyString
+  climate: MyString
+  category: MyString
