@@ -1,5 +1,5 @@
 class PlantsController < ApplicationController
-
+  before_action :authenticate_user
   def index
     @plants = Plant.all
     render :index
@@ -19,8 +19,6 @@ class PlantsController < ApplicationController
     end
   end
   
-
-
   private
 
   def plant_params
