@@ -1,4 +1,4 @@
-json.extract! plant, :id, :created_at, :updated_at
+json.extract! plant, :id
 json.common_name plant.common_name
 json.latin_name plant.latin_name
 json.img plant.img
