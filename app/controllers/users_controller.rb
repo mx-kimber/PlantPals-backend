@@ -1,51 +1,65 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user, only: [:show, :update, :destroy]
+  before_action :authenticate_user, except: [:create]
+  before_action :current_user, except: [:create]
 
-  
   def index
-    @users = User.all
-    render :index
+    if current_user
+      @users = [current_user]
+      render :index
+    else
+      render json: { error: "Unauthorized access" }, status: :unauthorized
+    end
   end
+  
 
   def show
-    @user = User.find_by(id: params[:id])
-    render :show
+    if current_user
+      @user = current_user
+      render :show
+    else
+      render json: { error: "Unauthorized access" }, status: :unauthorized
+    end
   end
 
   def create
-    @user = User.new(
-      first_name: params[:first_name],
-      last_name: params[:last_name],
-      email: params[:email],
-      password: params[:password],
-      password_confirmation: params[:password_confirmation],
-      profile_img: params[:profile_img]
-    )
+    @user = User.new(user_params)
+
     if @user.save
       render json: { message: "User created successfully" }, status: :created
     else
       render json: { errors: @user.errors.full_messages }, status: :bad_request
     end
   end
-  
 
   def update
-    @user = User.find_by(id: params[:id])
-    @user.first_name = params[:first_name] || @user.first_name
-    @user.last_name = params[:last_name] || @user.last_name
-    @user.email = params[:email] || @user.email
-    @user.password = params[:password] || @user.password
-    @user.profile_img = params[:profile_img] || @user.profile_img
+    if current_user && current_user.id.to_s == params[:id]
+      @user = User.find_by(id: params[:id])
+      @user.assign_attributes(user_params)
 
-    @user.save
-    render :show
+      if @user.save
+        render :show
+      else
+        render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: "Unauthorized access" }, status: :unauthorized
+    end
   end
 
   def destroy
-    @user = User.find_by(id: params[:id])
-    @user.destroy
-    render json: {message: "user has been destroyed successfully"}
+    # if current_user && current_user.id.to_s == params[:id]
+      @user = User.find_by(id: params[:id])
+      if @user.destroy
+        render json: { message: "User has been destroyed successfully" }
+      else
+        render json: { error: "Unauthorized access" }, status: :unauthorized
+      end
+    # end
   end
+ 
+  private
 
-
+  def user_params
+    params.permit(:first_name, :last_name, :email, :password, :password_confirmation, :profile_img)
+  end
 end
