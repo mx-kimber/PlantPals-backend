@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user, only: [:show, :update, :destroy]
 
   
   def index
@@ -43,7 +44,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find_by(id: params[:id])
     @user.destroy
-    render json: {message: "user as been destroyed successfully"}
+    render json: {message: "user has been destroyed successfully"}
   end
 
 
