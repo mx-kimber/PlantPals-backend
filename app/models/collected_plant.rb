@@ -1,0 +1,2 @@
+class CollectedPlant < ApplicationRecord
+end

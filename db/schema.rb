@@ -10,16 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_18_161714) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_20_001335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "collections", force: :cascade do |t|
+  create_table "collected_plants", force: :cascade do |t|
     t.integer "user_id"
     t.integer "plant_id"
     t.string "nickname"
-    t.string "custom_img"
     t.text "notes"
+    t.string "custom_image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
