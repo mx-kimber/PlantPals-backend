@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   
   resources :plants
   resources :collected_plants
+  resources :schedules
 end

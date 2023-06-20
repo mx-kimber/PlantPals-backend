@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_20_001335) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_20_005718) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -39,7 +39,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_20_001335) do
 
   create_table "schedules", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "collection_id"
+    t.integer "collected_plant_id"
     t.integer "days_to_water"
     t.datetime "watering_start_date"
     t.datetime "created_at", null: false

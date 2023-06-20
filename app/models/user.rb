@@ -7,4 +7,5 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }
   
   has_many :collected_plants
+  has_many :schedules, through: :collected_plants
 end
