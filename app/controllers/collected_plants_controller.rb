@@ -22,6 +22,30 @@ class CollectedPlantsController < ApplicationController
     end
   end
 
+  def update
+    @collected_plant = CollectedPlant.find_by(id: params[:id])
+  
+    if @collected_plant
+      if @collected_plant.update(collected_plant_params)
+        render :show
+      else
+        render json: { errors: @collected_plant.errors.full_messages }, status: :unprocessable_entity
+      end
+    else
+      render json: { errors: ['Collected Plant not found'] }, status: :not_found
+    end
+  end
+  
+  def destroy
+    @collected_plant = CollectedPlant.find_by(id: params[:id])
+
+    if @collected_plant.destroy
+      render json: { message: "Collected plant destroyed successfully" }
+    else
+      render json: { message: "Collected Plant not found" }, status: :not_found
+    end
+  end
+
   private
 
   def collected_plant_params
