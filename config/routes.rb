@@ -4,5 +4,5 @@ Rails.application.routes.draw do
   resources :users  
   
   resources :plants
-  
+  resources :collected_plants
 end

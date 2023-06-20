@@ -1,2 +1,1 @@
-json.extract! collected_plant, :id, :created_at, :updated_at
-json.url collected_plant_url(collected_plant, format: :json)
+json.extract! collected_plant, :id, :user_id, :plant_id, :nickname, :notes, :custom_image, :created_at
