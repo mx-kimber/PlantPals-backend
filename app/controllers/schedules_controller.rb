@@ -13,14 +13,25 @@ class SchedulesController < ApplicationController
 
   def create
     @collected_plant = current_user.collected_plants.find(params[:collected_plant_id])
-    @schedule = @collected_plant.build_schedule(schedule_params)
-
-    if @schedule.save
-      render json: @schedule, status: :created
+    @schedule = @collected_plant.schedule
+  
+    if @schedule
+      if @schedule.update(schedule_params)
+        render json: @schedule
+      else
+        render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
+      @schedule = @collected_plant.build_schedule(schedule_params)
+  
+      if @schedule.save
+        render json: @schedule, status: :created
+      else
+        render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
+      end
     end
   end
+  
 
   def update
     @schedule = Schedule.find_by(id: params[:id])

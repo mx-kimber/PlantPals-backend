@@ -7,4 +7,5 @@ class Schedule < ApplicationRecord
   validates :watering_start_date, presence: true
   validates :days_to_water, presence: true
   
+  accepts_nested_attributes_for :collected_plant
 end
