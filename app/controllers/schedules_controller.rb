@@ -2,43 +2,32 @@ class SchedulesController < ApplicationController
   before_action :authenticate_user
 
   def index
-    @schedules = current_user.schedules
-    render json: @schedules
+    @schedules = current_user.schedules.includes(:collected_plant)
+    render json: @schedules, include: [:collected_plant]
   end
 
   def show
     @schedule = Schedule.find(params[:id])
-    render json: @schedule
+    render json: @schedule, include: [:collected_plant]
   end
 
   def create
     @collected_plant = current_user.collected_plants.find(params[:collected_plant_id])
-    @schedule = @collected_plant.schedule
-  
-    if @schedule
-      if @schedule.update(schedule_params)
-        render json: @schedule
-      else
-        render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
-      end
+    @schedule = @collected_plant.schedule || @collected_plant.build_schedule
+
+    if @schedule.update(schedule_params)
+      render json: @schedule, include: [:collected_plant], status: :created
     else
-      @schedule = @collected_plant.build_schedule(schedule_params)
-  
-      if @schedule.save
-        render json: @schedule, status: :created
-      else
-        render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
-      end
+      render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
 
   def update
     @schedule = Schedule.find_by(id: params[:id])
 
     if @schedule
       if @schedule.update(schedule_params)
-        render json: @schedule
+        render json: @schedule, include: [:collected_plant]
       else
         render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
       end
@@ -50,10 +39,14 @@ class SchedulesController < ApplicationController
   def destroy
     @schedule = Schedule.find_by(id: params[:id])
 
-    if @schedule.destroy
-      render json: { message: "Schedule destroyed successfully" }
+    if @schedule
+      if @schedule.destroy
+        render json: { message: 'Schedule destroyed successfully' }
+      else
+        render json: { errors: @schedule.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: { message: "Deletion canceled" }
+      render json: { errors: ['Schedule not found'] }, status: :not_found
     end
   end
 
