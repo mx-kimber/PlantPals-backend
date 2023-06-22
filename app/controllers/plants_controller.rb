@@ -54,21 +54,14 @@ class PlantsController < ApplicationController
 
     else
       flash[:error] = "Failed to retrieve plant data. Error code: #{response.code}"
-      # redirect_to root_path
+      
     end
   end
-   
 
+    
   private
 
-  def api_get_request(url)
-    headers = {
-      'X-RapidAPI-Key' => '',
-      'X-RapidAPI-Host' => 'house-plants2.p.rapidapi.com'
-    }
-
-    HTTP.headers(headers).get(url)
+  def plant_params
+  params.require(:plant).permit(:common_name, :latin_name, :img, :watering, :light_ideal, :light_tolerated, :climate, :category, :url)
   end
 end
-
-
