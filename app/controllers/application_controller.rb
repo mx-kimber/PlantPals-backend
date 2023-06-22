@@ -26,5 +26,20 @@ class ApplicationController < ActionController::Base
       render json: { error: "Please log in or sign up" }, status: :unauthorized
     end
   end
+
+  def api_get_request(url)
+    headers = {
+      'X-RapidAPI-Key' => Rails.application.credentials.rapidapi[:api_key],
+      'X-RapidAPI-Host' => 'house-plants2.p.rapidapi.com'
+    }
   
+    HTTP.headers(headers).get(url)
+  end
+  
+
+  def fetch_plant_data(plant_id)
+    url = "https://house-plants2.p.rapidapi.com/plants/id/#{params [:id]}"
+    response = api_get_request(url)
+    JSON.parse(response.body)
+  end  
 end
