@@ -1,6 +1,12 @@
 json.extract! collected_plant, :id, :user_id, :plant_id, :nickname, :notes, :custom_image, :created_at
 
-
+if @plant_data.present?
+  json.plant_data do
+    json.extract! @plant_data, 'id', 'common_name', 'latin_name', 'img', 'watering', 'light_ideal', 'light_tolerated', 'climate', 'category', 'url'
+  end
+else
+  json.plant_data 'Plant data not available'
+end
 
 if collected_plant.schedule
   json.schedule do
