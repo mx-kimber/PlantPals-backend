@@ -42,11 +42,11 @@ class CollectedPlantsController < ApplicationController
 
   def create
     plant_id = params[:plant_id]
-    @user_id = current_user.id
     @plant_data = retrieve_plant_data(plant_id)
 
     @collected_plant = CollectedPlant.new(collected_plant_params)
-
+    @collected_plant.user_id = current_user.id
+  
     if @collected_plant.save
       redirect_to @collected_plant, notice: "Plant saved to collection successfully."
     else
