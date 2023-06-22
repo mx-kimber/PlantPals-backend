@@ -10,7 +10,7 @@ end
 
 if collected_plant.schedule
   json.schedule do
-    json.extract! collected_plant.schedule, :id, :collected_plant_id, :watering_start_date, :days_to_water
+    json.extract! collected_plant.schedule, :id, :user_id, :collected_plant_id, :watering_start_date, :days_to_water
   end
 else
   json.schedule "No schedule available"
