@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, unless: -> { request.format.json? }
-  before_action :current_user
+  # before_action :current_user
  
 
   def current_user

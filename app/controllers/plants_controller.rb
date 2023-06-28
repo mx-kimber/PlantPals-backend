@@ -5,9 +5,10 @@ class PlantsController < ApplicationController
   
   def index
     response = api_get_request('https://house-plants2.p.rapidapi.com/all')
+  
     if response.code == 200
       plant_data = JSON.parse(response.body)
-
+  
       @plants = plant_data.first(20).map do |plant_data|
         {
           'id' => plant_data['id'],
@@ -22,13 +23,13 @@ class PlantsController < ApplicationController
           'url' => plant_data['Url'] || 'Resource not found'
         }
       end
-
-      render :index
+  
+      render json: @plants
     else
-      flash[:error] = "Failed to retrieve plant data. Error code: #{response.code}"
-      redirect_to root_path
+      render json: { error: "Failed to retrieve plant data. Error code: #{response.code}" }, status: :unprocessable_entity
     end
   end
+  
 
   def show
     @plant = Plant.find_by(id: params[:id])
