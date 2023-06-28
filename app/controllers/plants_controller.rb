@@ -9,8 +9,7 @@ class PlantsController < ApplicationController
     if response.code == 200
       plant_data = JSON.parse(response.body)
 
-      @plants = plant_data.sort_by { |plant| plant['common_name'] }
-        .first(5).map do |plant_data|
+      @plants = plant_data.map do |plant_data|
         {
           'id' => plant_data['id'],
           'common_name' => plant_data['Common name (fr.)'] || 'Unknown',
