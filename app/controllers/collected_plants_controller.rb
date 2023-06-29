@@ -1,62 +1,49 @@
 require 'http'
+
 class CollectedPlantsController < ApplicationController
   before_action :authenticate_user
-
+  
   def index
     @collected_plants = current_user.collected_plants.order(created_at: :desc)
-    collected_plants_data = []
-
-    @collected_plants.each do |collected_plant|
-      plant_data = retrieve_plant_data(collected_plant[:plant_id])
-      next unless plant_data
-
-      schedule_data = collected_plant.schedule ? schedule_data(collected_plant.schedule) : 'No schedule available'
-
-      collected_plant_data = {
-        'collected_plant' => collected_plant,
-        'plant_data' => plant_data,
-        'schedule' => schedule_data
-      }
-
-      collected_plants_data << collected_plant_data
-    end
-
-    render json: collected_plants_data
+    render :index
   end
 
   def show
     @collected_plant = CollectedPlant.find(params[:id])
-    plant_data = retrieve_plant_data(@collected_plant[:plant_id])
-    schedule_data = @collected_plant.schedule ? schedule_data(@collected_plant.schedule) : 'No schedule available'
-
-    if plant_data
-      render json: {
-        collected_plant: @collected_plant,
-        plant_data: plant_data,
-        schedule: schedule_data
-      }
-    else
-      render json: { error: "Failed to retrieve plant data." }, status: :unprocessable_entity
-    end
+    render :show
   end
 
   def create
-    plant_id = params[:plant_id]
-    @plant_data = retrieve_plant_data(plant_id)
+    @collected_plant = current_user.collected_plants.build(collected_plant_params)
+    plant_data = retrieve_plant_data(@collected_plant.plant_id)
 
-    @collected_plant = CollectedPlant.new(collected_plant_params)
-    @collected_plant.user_id = current_user.id
-  
+    if plant_data.nil?
+      render json: { error: 'Failed to retrieve plant data from the API' }, status: :unprocessable_entity
+      return
+    end
+
+   
+    @collected_plant.assign_attributes(
+      common_name: plant_data['Common name (fr.)'] || 'Unknown',
+      latin_name: plant_data['Latin name'] || 'Unknown',
+      img: plant_data['Img'] || 'Unknown',
+      watering: plant_data['Watering'] || 'Unknown',
+      light_ideal: plant_data['Light ideal'] || 'Unknown',
+      light_tolerated: plant_data['Light tolered'] || 'Unknown',
+      climate: plant_data['Climat'] || 'Unknown',
+      category: plant_data['Categories'] || 'Unknown',
+      url: plant_data['Url'] || 'Resource not found'
+    )
+
     if @collected_plant.save
-      redirect_to @collected_plant, notice: "Plant saved to collection successfully."
+      render :show
     else
-      flash[:error] = @collected_plant.errors.full_messages.join(", ")
-      redirect_to plant_path(plant_id)
+      render json: { errors: @collected_plant.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   def update
-    @collected_plant = CollectedPlant.find_by(id: params[:collected_plant_id])
+    @collected_plant = CollectedPlant.find_by(id: params[:id])
   
     if @collected_plant
       if @collected_plant.update(collected_plant_params)
@@ -73,10 +60,11 @@ class CollectedPlantsController < ApplicationController
     @collected_plant = CollectedPlant.find_by(id: params[:id])
 
     if @collected_plant
-      if @collected_plant.destroy
+      if confirm_destroy?
+        @collected_plant.destroy
         render json: { message: "Collected plant destroyed successfully" }
       else
-        render json: { errors: @collected_plant.errors.full_messages }, status: :unprocessable_entity
+        render json: { message: "Deletion canceled" }
       end
     else
       render json: { errors: ['Collected Plant not found'] }, status: :not_found
