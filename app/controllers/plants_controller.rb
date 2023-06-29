@@ -51,11 +51,13 @@ class PlantsController < ApplicationController
         'url' => plant_data['Url'] || 'Resource not found'
       }
   
+      current_user.current_plant_data = @plant_data
+      current_user.save
+  
       render json: @plant_data
 
     else
       flash[:error] = "Failed to retrieve plant data. Error code: #{response.code}"
-      
     end
   end
 
@@ -63,6 +65,6 @@ class PlantsController < ApplicationController
   private
 
   def plant_params
-  params.require(:plant).permit(:common_name, :latin_name, :img, :watering, :light_ideal, :light_tolerated, :climate, :category, :url)
+    params.require(:plant).permit(:common_name, :latin_name, :img, :watering, :light_ideal, :light_tolerated, :climate, :category, :url)
   end
 end
