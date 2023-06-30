@@ -37,9 +37,9 @@ class ApplicationController < ActionController::Base
   end
   
 
-  def fetch_plant_data(plant_id)
-    url = "https://house-plants2.p.rapidapi.com/plants/id/#{plant_id}"
+  def retrieve_plant_data(plant_id)
+    url = "https://house-plants2.p.rapidapi.com/id/#{plant_id}"
     response = api_get_request(url)
-    JSON.parse(response.body)
-  end  
+    response.code == 200 ? JSON.parse(response.body) : nil
+  end 
 end

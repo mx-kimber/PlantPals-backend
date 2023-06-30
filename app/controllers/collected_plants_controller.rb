@@ -76,12 +76,7 @@ class CollectedPlantsController < ApplicationController
   def collected_plant_params
     params.permit(:plant_id, :user_id, :nickname, :custom_image, :notes)
   end
-  
-  def retrieve_plant_data(plant_id)
-    url = "https://house-plants2.p.rapidapi.com/id/#{plant_id}"
-    response = api_get_request(url)
-    response.code == 200 ? JSON.parse(response.body) : nil
-  end
+
 
   def schedule_data(schedule)
     {
