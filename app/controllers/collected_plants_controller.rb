@@ -15,6 +15,7 @@ class CollectedPlantsController < ApplicationController
 
   def create
     @collected_plant = current_user.collected_plants.build(collected_plant_params)
+    plant_data = Plant.find_or_create_by(id: @collected_plant.plant_id)
     plant_data = retrieve_plant_data(@collected_plant.plant_id)
 
     if plant_data.nil?
@@ -74,7 +75,7 @@ class CollectedPlantsController < ApplicationController
   private
 
   def collected_plant_params
-    params.permit(:plant_id, :nickname, :custom_image, :notes)
+    params.permit(:plant_id,:nickname, :custom_image, :notes)
   end
 
 
