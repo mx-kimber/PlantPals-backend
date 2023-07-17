@@ -74,7 +74,7 @@ class CollectedPlantsController < ApplicationController
   private
 
   def collected_plant_params
-    params.permit(:plant_id, :user_id, :nickname, :custom_image, :notes)
+    params.permit(:plant_id, :nickname, :custom_image, :notes)
   end
 
 
