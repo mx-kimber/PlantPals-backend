@@ -4,7 +4,7 @@ class CollectedPlantsController < ApplicationController
   before_action :authenticate_user
   
   def index
-    @collected_plants = current_user.collected_plants.order(created_at: :desc)
+    @collected_plants = current_user.collected_plants
     render :index
   end
 
