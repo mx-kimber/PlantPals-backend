@@ -57,20 +57,18 @@ class CollectedPlantsController < ApplicationController
     end
   end
   
+
   def destroy
     @collected_plant = CollectedPlant.find_by(id: params[:id])
-
+  
     if @collected_plant
-      if confirm_destroy?
-        @collected_plant.destroy
-        render json: { message: "Collected plant destroyed successfully" }
-      else
-        render json: { message: "Deletion canceled" }
-      end
+      @collected_plant.destroy
+      render json: { message: "Collected plant destroyed successfully" }
     else
       render json: { errors: ['Collected Plant not found'] }, status: :not_found
     end
   end
+  
 
   private
 

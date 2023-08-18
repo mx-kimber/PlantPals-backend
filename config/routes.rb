@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  post "/sessions" => "sessions#create"
+  resource :sessions, only: [:create, :destroy]
   resources :users  
   
   resources :plants
